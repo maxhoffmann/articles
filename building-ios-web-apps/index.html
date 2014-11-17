@@ -1,0 +1,72 @@
+<hr>
+<h2 id="date-2013-02-22">date: 2013-02-22</h2>
+<h1 id="building-ios-web-apps">Building iOS Web Apps</h1>
+<h2 id="web-inspector">Web Inspector</h2>
+<p>Remote debugging web applications is available since iOS6. With remote debugging it is easy to check and alter the rendered <abbr>CSS</abbr> and test the functionality of your app on the device itself. Instead of Safari I recommend you to use the latest <a href="http://nightly.webkit.org/">Nightly WebKit</a>, which has more features and a better interface. Changes to WebKit’s developer tools since Safari 6 can be found <a href="https://gist.github.com/paulmillr/4056234">here</a>.</p>
+<p>To enable developer tools on your computer go to <strong>Preferences &gt; Advanced</strong> in Webkit/Safari and check the box next to “Show Develop menu in menu bar”.</p>
+<p><a href="http://maximilianhoffmann.com/images/AdvancedSettings.png"><img src="http://maximilianhoffmann.com/images/AdvancedSettings.png" alt="Einstellungen"></a></p>
+<p>On your mobile device go to <strong>Settings &gt; Safari &gt; Advanced</strong> and toggle the Web Inspector there.</p>
+<p><a href="http://maximilianhoffmann.com/images/ios_web_inspector.png"><img src="http://maximilianhoffmann.com/images/ios_web_inspector.png" alt="iOS Web Inspector"></a></p>
+<p>Afterwards you can connect the device with your computer using a <strong>cable</strong>. If you have opened a website on mobile Safari, its desktop counterpart should now list your device in its develop menu including your open tabs. Clicking on one of these should open the developer tools for the selected website.</p>
+<h2 id="local-web-server">Local Web Server</h2>
+<p>While developing your application it is useful to see changes instantly and without the need of a server. That’s why I recommend you to install and start <a href="http://www.mamp.info/">MAMP</a>. This application allows you to choose a folder, which will be displayed at <code>http://localhost</code> and at your <abbr>IP</abbr> address on mobile devices if they are in the same wireless network as your computer. To find your computer’s <abbr>IP</abbr> go to <strong>System Preferences &gt; Network</strong>. It will probably look like 192.168.0.X therefore you should be able to open the web app from your device at <code>http://192.168.0.X</code>. For instant updates when saving a file you can use tools like <a href="http://livereload.com/">LiveReload</a>.</p>
+<h2 id="hiding-safari-s-chrome">Hiding Safari’s chrome</h2>
+<p>Users have always the ability to add websites to their homescreen, but If you want to hide Safari’s chrome after they have added yours, you need to include this meta tag:</p>
+<pre><code class="lang-markup">&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
+</code></pre>
+<h2 id="zooming-and-viewports">Zooming and Viewports</h2>
+<p>On websites users may pinch to zoom at anytime anywhere, but this shouldn’t be possible for web apps in most cases. This meta tag disables zooming with gestures and sets the viewport to its “default” value:</p>
+<pre><code class="lang-markup">&lt;meta name=&quot;viewport&quot; content=&quot;user-scalable=no, initial-scale=1&quot;&gt;
+</code></pre>
+<p>I have to admit that “default value” is not quite right as viewport is a larger topic, but you can read more about it on <a href="http://developer.apple.com/library/ios/#documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html#//apple_ref/doc/uid/TP40006509-SW1">Apple’s Safari Web Content Guide</a>.</p>
+<h2 id="status-bar-options">Status bar options</h2>
+<p>The status bar above your web app is black by default on iOS6. You may change this to black translucent, but keep in mind that this will add <code>20px</code> and <code>40px</code> on retina screens respectively to your app’s height.</p>
+<pre><code class="lang-markup">&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black-translucent&quot;&gt;
+</code></pre>
+<h2 id="your-app-s-name">Your app’s name</h2>
+<p>If a user wants to add your site to his homescreen, Safari uses the webpage&#39;s title as a suggestion for the name of your web app. Since iOS6 you can suggest another name:</p>
+<pre><code class="lang-markup">&lt;meta name=&quot;apple-mobile-web-app-title&quot; content=&quot;My Web App&quot;&gt;
+</code></pre>
+<p>In both cases it is just a proposal and users will always be able to define another name.</p>
+<h2 id="icon-sizes">Icon sizes</h2>
+<p>By default iOS uses a screenshot of your website as icon for the web app. You can set your own by appending a <code>link</code> tag to your website with the <code>rel</code> attribute of <code>apple-touch-icon</code>.  As there are different screen resolutions across Apple’s devices you can define an icon for each of them, but iOS is also able to scale icons down (or even up). This means you can define an icon for the retina iPad, which has the size of <code>144x144</code> pixels and it will work on every other device for example an iPhone 3G. I prefer defining one icon for each retina device and leave standard displays behind as retina will be everywhere. So if your web app will work on both iPhone and iPad, make and include both in retina sizes. If it’s intended to work on iPhone only like <a href="http://doubbble.com">doubbble</a>, include just the retina iPhone icon. To tell iOS which icon it should use if both options are available, give it a hint with the <code>sizes</code> attribute. Example:</p>
+<pre><code class="lang-markup">&lt;!-- iPhone Retina --&gt;
+&lt;link rel=&quot;apple-touch-icon-precomposed&quot; sizes=&quot;114x114&quot; href=&quot;apple-touch-icon-114x114-precomposed.png&quot;&gt;
+
+&lt;!-- iPad Retina --&gt;
+&lt;link rel=&quot;apple-touch-icon-precomposed&quot; sizes=&quot;144x144&quot; href=&quot;apple-touch-icon-144x144-precomposed.png&quot;&gt;
+</code></pre>
+<p>You may leave out the <code>link</code> tags if your icons are stored in your website’s root directory and start with <code>apple-touch-icon-</code>, but as there are some Android devices using theses tags too, it is possible that it won’t work for them. In the example I’ve also added <strong>precomposed</strong> to the icon’s name and the <code>rel</code> attribute of the <code>link</code> tag. This tells iOS not to overlay its default glossy gradient over your icons. For further information about naming conventions have a look at <a href="http://developer.apple.com/library/ios/#documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html#//apple_ref/doc/uid/TP40002051-CH3-SW4">Apple’s Guide</a>.</p>
+<h2 id="startup-image">Startup image</h2>
+<p>As for native apps you have the ability to display an image when the user starts your web app. <a href="http://doubbble.com">doubbble</a> for example displays an image of its initial screen so that the first start of the app feels much faster. A startup image is always the size of the device’s resolution minus the status bar. iPads can have one startup image for portrait mode and one for landscape mode whereas iPhone web apps will always start in portrait mode. Furthermore iOS doesn’t scale startup images. You have to include images for every device you support with the correct dimensions to work. Additionally startup images in landscape mode have to be saved in portrait mode rotated 90 degrees clockwise. According to the <code>media</code> attribute of the <code>link</code> tags iOS applies the matching image. A full list with every possible startup image definition can be found on this <a href="https://gist.github.com/tfausak/2222823">gist</a>. The code is pretty heavy if you support a broad range of devices, but it’s easy and short if you just support iPhone 5 and iPhone 4 for example:</p>
+<pre><code class="lang-markup">&lt;!-- iPhone 4 --&gt;
+&lt;link rel=&quot;apple-touch-startup-image&quot; href=&quot;images/iphone4.png&quot; media=&quot;(device-height:480px)&quot;&gt;
+
+&lt;!-- iPhone 5 --&gt;
+&lt;link rel=&quot;apple-touch-startup-image&quot; href=&quot;images/iphone5.png&quot; media=&quot;(device-height:568px)&quot;&gt;
+</code></pre>
+<p>Image dimension of startup images for iPhone 4/4S is <code>640x920</code> and for iPhone 5 it’s <code>640x1096</code>.</p>
+<h2 id="writing-the-first-lines">Writing the first lines</h2>
+<p>Taking everything into account I have written an <code>index.html</code> for the dribbble feed viewer:</p>
+<pre><code class="lang-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;user-scalable=no,initial-scale=1&quot;&gt;
+  &lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
+  &lt;meta name=&quot;apple-mobile-web-app-title&quot; content=&quot;my web app&quot;&gt;
+  &lt;link rel=&quot;apple-touch-icon-precomposed&quot; href=&quot;apple-touch-icon-114x114-precomposed.png&quot;&gt;
+  &lt;link rel=&quot;apple-touch-startup-image&quot; href=&quot;images/iphone4.png&quot; media=&quot;(device-height:480px)&quot;&gt;
+  &lt;link rel=&quot;apple-touch-startup-image&quot; href=&quot;images/iphone5.png&quot; media=&quot;(device-height:568px)&quot;&gt;
+  &lt;title&gt;Install dribbble feed viewer&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Welcome buddy!&lt;/h1&gt;
+  &lt;p&gt;Add this site to your homescreen to install the dribbble feed viewer.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>I have uploaded the complete code with images to <a href="https://github.com/maxhoffmann/ios-web-apps">github</a>. After adding this site to your homescreen it should look like this:</p>
+<p><a href="http://maximilianhoffmann.com/images/icon.jpg"><img src="http://maximilianhoffmann.com/images/icon.jpg" alt="screenshot with app icon"></a></p>
+<h2 id="questions-">Questions?</h2>
+<p>Is anything unclear to you or have you found grammatical errors due to the fact that I am not a native speaker? I’d value your feedback on this article on <a href="http://branch.com/b/building-ios-web-apps-part-1-maximilian-hoffmann/invite_link/m7YHa4NJhx7Mzw">Branch</a>.</p>

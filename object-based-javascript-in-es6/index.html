@@ -1,0 +1,76 @@
+<hr>
+<h2 id="date-2014-03-10">date: 2014-03-10</h2>
+<h1 id="object-based-javascript-in-es6">Object-Based JavaScript in ES6</h1>
+<p>At first I was pretty happy, that there will be a <code>class</code> syntax in ECMAScript 6. Then I listened to the <a href="http://workingdraft.de/160/">latest revision</a> of “Working Draft” (German podcast) about Node and JavaScript and afterwards watched Eric Elliott’s talk <a href="https://vimeo.com/69255635">“Classical Inheritance is obsolet”</a> for a second time. It became clear to me that class-based object-oriented programming may not be my programming paradigm of choice. Instead I prefer a truly “object-oriented” programming style or as Kyle Simpsons calls it: <a href="http://davidwalsh.name/javascript-objects-deconstruction">“object-based”</a>.</p>
+<p>Although the <code>class</code> syntax of ES6 will allow writing JavaScript in a class-based way more easily, there is also some syntactical sugar for the “object-based” approach.</p>
+<h2 id="enhanced-object-literals">Enhanced Object Literals</h2>
+<p>Besides a shorthand for <code>property: property</code> assignments, methods can now be defined without the <code>function</code> keyword.</p>
+<pre><code class="lang-javascript">var human = {
+  breathe() { // no function keyword here
+    return &#39;breathing…&#39;;
+  }
+};
+</code></pre>
+<h2 id="object-setprototypeof">Object.setPrototypeOf</h2>
+<p>The most important addition for me is <code>Object.setPrototypeOf</code>. It allows defining objects using the enhanced object literal and linking these objects afterwards via the prototype chain to embrace its “behavior delegation”.</p>
+<p>Before ES6 one had to use <code>Object.create</code>, which prevents using the object literal on the object delegating its behavior.</p>
+<pre><code class="lang-javascript">var human = {
+  breathe() {
+    return &#39;breathing…&#39;;
+  }
+};
+
+var worker = Object.create(human);
+
+worker.work = function() {
+  return &#39;working…&#39;;
+};
+worker.company = &#39;best company in the world&#39;;
+
+worker.breathe();
+// returns &#39;breathing…&#39;;
+</code></pre>
+<p>With <code>Object.setPrototypeOf</code> the usage of two object literals will be possible.</p>
+<pre><code class="lang-javascript">var human = {
+  breathe() {
+    return &#39;breathing…&#39;;
+  }
+};
+
+var worker = {
+  work() {
+    return &#39;working…&#39;;
+  },
+  company: &#39;best company in the world&#39;
+};
+
+Object.setPrototypeOf(worker, human);
+
+worker.breathe();
+// returns &#39;breathing…&#39;;
+</code></pre>
+<p>This allows using the object-based approach as it was intended.</p>
+<h2 id="object-assign">Object.assign</h2>
+<p>Instance-specific behavior or behavior that should be available to multiple prototypes can be achieved with mixins.</p>
+<blockquote>
+<p>A mixin is a class that defines a set of functions relating to a type. — <a href="http://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/">Angus Croll</a></p>
+</blockquote>
+<p>Instead of using classes one can simply create an object with the desired functionality and copy its behavior to another object or prototype via <code>Object.assign</code>.</p>
+<pre><code class="lang-javascript">var canEat = {
+  food: &#39;nothing&#39;,
+  eat() {
+    return `eats ${this.food}`; // template string (part of ES6)
+  }
+};
+
+Object.assign(worker, canEat);
+
+worker1 = Object.create(worker);
+worker2 = Object.create(worker);
+worker2.food = &#39;apple&#39;;
+
+worker1.eat(); // &#39;eats nothing&#39;
+worker2.eat(); // &#39;eats apple&#39;
+</code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p>Although ES6 offers the <code>class</code> syntax it also provides syntactic sugar for prototypes and their concept of “behavior delegation”. I look forward to using ES6 in production.</p>

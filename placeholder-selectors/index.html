@@ -1,0 +1,84 @@
+<hr>
+<h2 id="date-2013-02-14">date: 2013-02-14</h2>
+<h1 id="placeholder-selectors">Placeholder Selectors</h1>
+<p>Introduced with Sass 3.2 placeholder selectors enable us to write better modular <abbr>CSS</abbr> by extending classes, which won’t be included in the compiled file. The main advantage of using placeholder selectors is the reduction of classes in your <abbr>HTML</abbr> <strong>and</strong> <abbr>CSS</abbr>.</p>
+<h2 id="plain-css">Plain CSS</h2>
+<p>Let’s assume we want to implement a website, which has tiles with different colors. Each tile has the same width, height and margin.</p>
+<pre><code class="lang-scss">.tile {
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+}
+</code></pre>
+<p>For the ability to add different colors to the tiles we included two theme classes in our <abbr>CSS</abbr>.</p>
+<pre><code class="lang-scss">.tile-blue {
+  background-color: blue;
+}
+.tile-red {
+  background-color: red;
+}
+</code></pre>
+<p>The corresponding markup could look like this:</p>
+<pre><code class="lang-markup">&lt;div class=&quot;tile tile-blue&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;tile tile-red&quot;&gt;&lt;/div&gt;
+</code></pre>
+<h2 id="without-placeholder-selectors">Without Placeholder Selectors</h2>
+<p>We’ve added two classes to the tile element: one for basic tile styles and one for the color. To reduce the number of classes we could simply extend <code>.tile</code> and remove it from our <abbr>HTML</abbr>.</p>
+<pre><code class="lang-scss">.tile {
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+}
+.tile-blue {
+  @extend .tile;
+  background-color: blue;
+}
+.tile-red {
+  @extend .tile;
+  background-color: red;
+}
+</code></pre>
+<p>Although we wouldn’t have to use the <code>.tile</code> class in our markup anymore, it would still be in our compiled <abbr>CSS</abbr>:</p>
+<pre><code class="lang-scss">.tile, .tile-blue, .tile-red {
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+}
+</code></pre>
+<p>To save some bytes or to prevent other developers from using the basic tile class without a color, we could also remove it from the compiled <abbr>CSS</abbr>.</p>
+<h2 id="using-placeholder-selectors">Using Placeholder Selectors</h2>
+<p>Changing the dot before a class to a percent sign tells Sass to use it as a placeholder class.</p>
+<pre><code class="lang-scss">%tile {
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+}
+.tile-blue {
+  @extend %tile;
+  background-color: blue;
+}
+.tile-red {
+  @extend %tile;
+  background-color: red;
+}
+</code></pre>
+<p>Now we just need to use our theme classes.</p>
+<pre><code class="lang-markup">&lt;div class=&quot;tile-red&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;tile-blue&quot;&gt;&lt;/div&gt;
+</code></pre>
+<p>And our compiled <abbr>CSS</abbr> doesn’t contain the basic tile class anymore.</p>
+<pre><code class="lang-scss">.tile-blue, .tile-red {
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+}
+.tile-blue {
+  background-color: blue;
+}
+.tile-red {
+  background-color: red;
+}
+</code></pre>
+<p>To sum up placeholder classes are not included in your compiled <abbr>CSS</abbr> so that you can prevent developers from using those classes in their <abbr>HTML</abbr>. It is also possible to build a framework solely out of placeholder classes, which will only be added to the compiled <abbr>CSS</abbr> if developers extend them.</p>
+<h2 id="further-reading">Further Reading</h2>
+<p><a href="http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#placeholder_selectors_">Sass Reference: Placeholder Selectors</a></p>

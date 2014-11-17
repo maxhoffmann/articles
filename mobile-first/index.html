@@ -1,0 +1,80 @@
+<hr>
+<h2 id="date-2012-12-09">date: 2012-12-09</h2>
+<h1 id="mobile-first">Mobile First</h1>
+<p>I have been familiar with mobile first and its advantages for a long time, but my blog’s latest iteration is the first site which actually uses this approach. First I had started implementing the new design desktop first and added mobile styles later via media queries, but after having seen Brad Frost’s inspiring talk <a href="https://vimeo.com/55076713">“Beyond Media Queries”</a> I have finally changed my mind and wrote the <abbr>CSS</abbr> from scratch, which was the best decision I could make.</p>
+<p>My styles are smaller in file size, easier to maintain and flexible like never before. Additionally I have started my own small Sass framework full of useful components and mixins, which faciliates things like using ems instead of pixels and includes my new way of laying out elements on a page. This “new” way has a lot in common with grids as it uses floats, but I think it is superior to most grids, because of its missing row divs and its mobile first approach.</p>
+<h2 id="reverse-engineering">Reverse Engineering</h2>
+<p>I started with looking at the new design based on my old desktop first approach and reverse engineered the grid. The first thing I recognized is that most designs on mobile devices have centered elements, so I wrote a placeholder class, which were introduced in Sass 3.2, to center elements:</p>
+<pre><code class="lang-scss">%centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+</code></pre>
+<p>Next I added a <code>.container</code> class to give elements some horizontal space.</p>
+<pre><code class="lang-scss">.container {
+  @extend %centered;
+  width: 88%;
+  max-width: 64em;
+}
+</code></pre>
+<p>Notice <code>max-width</code> limiting the width of my site to <code>1024px</code>, which fits best for my design, but you could change the value to your needs or omit it completely.</p>
+<p>Now it’s time to add columns, which will later lay out as a grid on wider screens. On mobile devices these again look like centered boxes.</p>
+<pre><code class="lang-scss">.col {
+  @extend %centered;
+  max-width: 30em;
+}
+</code></pre>
+<p>This time <code>max-width</code> prevents columns of enlarging too wide, so that their content is good to read on tablet devices. These classes are enough to give your site a basic and readable layout for most mobile and tablet devices. Browsers without media queries like <abbr>IE8</abbr> and below render the page fine as columns are never too wide for their content and centered by default.</p>
+<h2 id="applying-the-grid">Applying the grid</h2>
+<p>The actual grid is wrapped in a media query. The following styles are inside this query:</p>
+<pre><code class="lang-scss">@media (min-width: 48em) {
+  /* styles */
+}
+</code></pre>
+<p>For viewport sizes wider than <code>767px</code> columns will float and form the grid.</p>
+<pre><code class="lang-scss">.col {
+  float: left;
+  overflow: hidden;
+  max-width: none;
+}
+.col.right {
+  float: right;
+}
+</code></pre>
+<p>Columns are floated left by default, but may be floated to the right by adding <code>.right</code>. Overflowing content is hidden and <code>max-width</code> is reset allowing columns to use more space depending on their size class.</p>
+<p>You could add a lot of grid sizes to define a flexible 12-column grid, but for my purposes I’ve chosen the following sizes as my grid may have nested columns to further split up columns.</p>
+<pre><code class="lang-scss">/* col sizes */
+.full { width: 100%; }
+.half { width: 50%;  }
+
+.third      { width: 33.33%; }
+.two-thirds { width: 66.66%; }
+
+/* golden ratio */
+.gold-big   { width: 61.8%; }
+.gold-small { width: 38.2%; }
+
+.quarter        { width: 25%; }
+.three-quarters { width: 75% }
+</code></pre>
+<p>Like in <a href="http://getbootstrap.com">Bootstrap</a> I have added space classes to avoid the usage of empty columns for layout purposes.</p>
+<pre><code class="lang-scss">/* space sizes */
+.space-half { margin-left: 50%; }
+
+.space-third      { margin-left: 33.33%; }
+.space-two-thirds { margin-left: 66.66%; }
+
+.space-gold-big   { margin-left: 61.8%; }
+.space-gold-small { margin-left: 38.2%; }
+
+.space-quarter        { margin-left: 25%; }
+.space-three-quarters { margin-left: 25%; }
+</code></pre>
+<p>The last thing we need is a class to start a new row if columns don’t add up to 100%.</p>
+<pre><code class="lang-scss">.new-row {
+  clear: both;
+}
+</code></pre>
+<p>The advantage of starting rows by just adding a class to an element is its flexibility. You can remove and add this class to different elements on different viewport sizes via JavaScript and change the site’s layout with ease.</p>
+<p>This is my small insight into my blog’s foundation. You can take a look at the full code in my <a href="https://github.com/maxhoffmann/sass-framework/blob/master/components/grid.scss">Sass framework</a> repository. For vertical spacing I have added default padding-bottom of <code>24px</code> to <code>.col</code> and wrote some generic space classes, but those are different in every project that’s why I have left them out of my grid component.</p>
+<p><em>Note:</em> This is my first article written in English and I’m really thankful for feedback and critique.</p>
