@@ -1,7 +1,7 @@
-Articles
-========
+Posts
+=====
 
-My articles written in markdown prefixed with frontmatter for meta data.
+My posts written in markdown prefixed with frontmatter for meta data.
 
 ---
 
